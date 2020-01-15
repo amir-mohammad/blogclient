@@ -1,0 +1,8 @@
+export const GET_ALL_POSTS = "GET_ALL_POSTS"
+export const FAIL_GET_ALL_POSTS = "FAIL_GET_ALL_POSTS";
+export const SUCCES_REGISTER_USER = "SUCCES_REGISTER_USER";
+export const FAIL_REGISETER_USER = "FAIL_REGISETER_USER";
+export const GET_TOKEN = "GET_TOKEN";
+export const LOGIN_USER = "LOGIN_USER";
+export const FAIL_LOGIN_USER = "FAIL_LOGIN_USER";
+export const LOG_OUT = "LOG_OUT";
