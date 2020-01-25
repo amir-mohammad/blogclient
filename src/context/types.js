@@ -6,3 +6,7 @@ export const GET_TOKEN = "GET_TOKEN";
 export const LOGIN_USER = "LOGIN_USER";
 export const FAIL_LOGIN_USER = "FAIL_LOGIN_USER";
 export const LOG_OUT = "LOG_OUT";
+export const ADD_POST = "ADD_POST";
+export const FAIL_POST = "FAIL_POST";
+export const LIKE_POST = "LIKE_POST";
+export const ADD_COMMENT = "ADD_COMMENT";

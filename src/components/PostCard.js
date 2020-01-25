@@ -1,13 +1,55 @@
-import React from "react";
-import { GridColumn, Card, Image,Button, Icon, Label } from "semantic-ui-react";
+import React, { useContext } from "react";
+import { GridColumn, Card, Image,Button, Icon, Label,Transition, Grid ,Modal,Header, Form } from "semantic-ui-react";
 import moment from "moment";
+import UserContext from "../context/user/userContext";
+import {withRouter} from 'react-router-dom';
+import PostContext from "../context/postContext";
+import {useForm} from '../hooks/useForm';
+import { useState } from "react";
 
-const PostCard = ({
-  post: { id, username, body, createAt, likeCount, commentCount }
-}) => {
+
+
+const PostCard = (props) => {
+    const { 
+      _id, username, body, createAt, likeCount, commentCount
+     } = props.post;
+    const userContext = useContext(UserContext);
+    const postContext = useContext(PostContext);
+    const {user} = userContext;
+    const {likePost,addAComment} = postContext;
+    const {values,onChange,onSubmit} = useForm(addComment,{
+      body:''
+    })
+    const [open,setOpen] = useState(false);
+    function addComment(){
+      const token = localStorage.getItem('jwtToken');
+      addAComment(_id,values.body,token);
+      setOpen(false);
+    }
+    const likeClickHandler = () => {
+   
+      const token = localStorage.getItem('jwtToken');
+        if(user){
+        
+         likePost(_id,token);
+        }else{
+          
+          props.history.push('/login');
+        }
+    }
+
+    const commentHandler = () =>{
+      const token = localStorage.getItem('jwtToken');
+      if(user){
+
+      }else{
+        props.history.push('/login');
+      }
+    }
   return (
+    <>
     
-    <GridColumn  style={{marginTop:"20px"}}>
+    
       <Card fluid>
         <Card.Content>
           <Image
@@ -20,7 +62,7 @@ const PostCard = ({
           <Card.Meta>{moment(createAt).fromNow()}</Card.Meta>
           <Card.Description>{body}</Card.Description>
 
-          <Button as="div" labelPosition="right" style={{marginTop:"20px"}}>
+          <Button as="div" labelPosition="right" style={{marginTop:"20px"}} onClick={likeClickHandler}>
               <Button color="red">
                   <Icon name="heart"/>
                   Like
@@ -29,7 +71,7 @@ const PostCard = ({
                         {likeCount}
              </Label>
           </Button>
-          <Button as="div" labelPosition="right" style={{marginTop:"20px"}}>
+         {user ? (  <Modal open={open} trigger={<Button as="div" labelPosition="right" style={{marginTop:"20px"}} onClick={()=> setOpen(true)}>
               <Button color="teal">
                   <Icon name="comments"/>
                   Comments
@@ -37,12 +79,35 @@ const PostCard = ({
               <Label as='a' basic color='teal' pointing='left'>
                         {commentCount}
              </Label>
-          </Button>
+          </Button>}>
+    <Modal.Header>Put Your Comment</Modal.Header>
+    <Modal.Content>
+     
+      <Modal.Description>
+      <Form onSubmit={onSubmit}>
+      <Form.TextArea label='Please insert your comment' placeholder='Put your Comment' value={values.body} onChange={onChange} name="body"/>
+      <Button type="submit" color="teal">Send Comment</Button>
+      </Form>
+        
+      </Modal.Description>
+    </Modal.Content>
+  </Modal>):( <Button as="div" labelPosition="right" style={{marginTop:"20px"}} onClick={commentHandler}>
+              <Button color="teal">
+                  <Icon name="comments"/>
+                  Comments
+              </Button>
+              <Label as='a' basic color='teal' pointing='left'>
+                        {commentCount}
+             </Label>
+          </Button>)}
         </Card.Content>
       </Card>
-    </GridColumn>
+      </>
+   
+
+  
     
   );
 };
 
-export default PostCard;
+export default withRouter(PostCard) ;

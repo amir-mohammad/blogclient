@@ -1,30 +1,46 @@
-import React, { useContext,useEffect } from 'react';
-import PostContext from '../context/postContext';
-import  {Grid} from 'semantic-ui-react'
-import PostCard from '../components/PostCard';
+import React, { useContext, useEffect, useState } from "react";
+import PostContext from "../context/postContext";
+import {
+  Grid,
+  Card,
+  Form,
+  Button,
+  Transition,
+  GridColumn
+} from "semantic-ui-react";
+import PostCard from "../components/PostCard";
+import UserContext from "../context/user/userContext";
+import AddPostCard from "../components/AddPostCard";
 
+const Home = (props) => {
+  const userContext = useContext(UserContext);
+  const { user } = userContext;
 
-const Home = () => {
-    const postContext = useContext(PostContext);
-    const {posts,getPosts,errors,loading} = postContext;
+  const postContext = useContext(PostContext);
+  const { posts, getPosts, errors, loading } = postContext;
 
-    useEffect(() =>{
-       
-           getPosts();
+  useEffect(() => {
+    getPosts();
+  }, []);
 
+  return (
+    <div className="posts">
+      <Grid columns={3}>
+        <Grid.Row>
+          {user && <AddPostCard />}
 
-       
-    },[])
+          <Transition.Group animation="drop">
+            {posts &&
+              posts.map(post => (
+                <Grid.Column key={post.id} style={{ marginTop: "20px" }}>
+                  <PostCard  post={post}/>
+                </Grid.Column>
+              ))}
+          </Transition.Group>
+        </Grid.Row>
+      </Grid>
+    </div>
+  );
+};
 
-    return (
-        <div className="posts">
-           {posts && (<Grid columns={3} >
-                <Grid.Row >
-                    {posts.length> 0 && (posts.map( post => <PostCard key={post.id} post={post} />))}
-                </Grid.Row>
-           </Grid>)}
-        </div>
-    )
-}
-
-export default Home
+export default Home;
